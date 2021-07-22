@@ -1,3 +1,27 @@
 td {
     padding: 1em;
 }
+div.inner {
+    padding: 3px;
+    display: inline-block;
+    background-color: none;
+    border: 1px dotted #ccc;
+}
+div.hinner {
+    padding: 3px;
+    display: inline-block;
+    background-color: #9e9;
+    border: 1px dotted #363;
+}
+textarea {
+    background-color: transparent;
+}
+.inlinediv {
+    display: inline-block;
+}
+.middle {
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

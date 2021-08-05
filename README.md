@@ -2,4 +2,5 @@
 
 Matrix multiplication illustrated
 
-[Matix mul](matrix.html)
+* [Matix mul](https://pexmor.github.io/matrix-mul-js/matrix.html)
+* Jupyter: [NiceMatrix](NiceMatrix.ipynb)

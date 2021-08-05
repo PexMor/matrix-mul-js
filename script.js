@@ -1,7 +1,27 @@
 // the tool
 function subfce() {
-    return butfce()
+    return butfce();
 }
+
+function onloadfce() {
+    if (window.location.hash) {
+        var i0e = document.getElementById("i0");
+        var i1e = document.getElementById("i1");
+        // Fragment exists
+        if (i0e && i1e) {
+            const urlParams = new URLSearchParams("?" + window.location.hash.substr(1));
+            var i0 = urlParams.get("A");
+            var i1 = urlParams.get("B");
+            i0e.value = i0;
+            i1e.value = i1;
+        }
+    } else {
+        // Fragment doesn't exist
+    }
+    return butfce();
+}
+
+window.onhashchange = onloadfce;
 
 function mathw(val, row, pair, col, pfx) {
     txt = "$" + val + "$"
@@ -45,6 +65,15 @@ function lbl(state, pfx, row, pair, col) {
     }
 }
 
+function show_sl(hashUrl) {
+    var sld = document.getElementById("self-link");
+    if (sld) {
+        var url = location.protocol + '//' + location.host + location.pathname + hashUrl;
+        var html = `Share: <a href="${url}">${url}</a>`
+        sld.innerHTML = html;
+    }
+}
+
 function butfce() {
     var i0e = document.getElementById("i0");
     var i1e = document.getElementById("i1");
@@ -53,90 +82,98 @@ function butfce() {
     var trge = document.getElementById("trge");
     var trgm = document.getElementById("trgm");
     if (i0e && i1e && i0me && i1me && trge && trgm) {
-        i0 = JSON.parse(i0e.value);
-        i1 = JSON.parse(i1e.value);
-        var html = "";
-        var mx_html = `(${i0.length}:${i0[0].length}) &times; (${i1.length}:${i1[0].length})`
-        //trgm.innerHTML = mx_html
-        html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
-        // $\begin{bmatrix}a & b\\c & d\end{bmatrix}$
-        var html_i0m = "$\\begin{bmatrix}";
-        var i0m_rows = [];
-        for (var row = 0; row < i0.length; row++) {
-            html += "<tr>";
-            var i0m_cols = []
-            for (var col = 0; col < i0[0].length; col++) {
-                html += `<td id='i0_${row}_${col}'><div class='inner' id='si0_${row}_${col}'>${i0[row][col]}</div></td>`
-                i0m_cols.push(`{${i0[row][col]}}`)
+        // MathJax.startup.document.state(0);
+        MathJax.typesetClear();
+        // MathJax.texReset();
+        // MathJax.typeset();
+        MathJax.typesetPromise().then(() => {
+            i0 = JSON.parse(i0e.value);
+            i1 = JSON.parse(i1e.value);
+            var hashUrl = "#A=" + JSON.stringify(i0) + "&B=" + JSON.stringify(i1);
+            show_sl(hashUrl);
+            var html = "";
+            var mx_html = `(${i0.length}:${i0[0].length}) &times; (${i1.length}:${i1[0].length}) = (${i0.length}:${i1[0].length})`
+            //trgm.innerHTML = mx_html
+            html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
+            // $\begin{bmatrix}a & b\\c & d\end{bmatrix}$
+            var html_i0m = "$\\begin{bmatrix}";
+            var i0m_rows = [];
+            for (var row = 0; row < i0.length; row++) {
+                html += "<tr>";
+                var i0m_cols = []
+                for (var col = 0; col < i0[0].length; col++) {
+                    html += `<td id='i0_${row}_${col}'><div class='inner' id='si0_${row}_${col}'>${i0[row][col]}</div></td>`
+                    i0m_cols.push(`{${i0[row][col]}}`)
+                }
+                html += "</tr>";
+                i0m_rows.push(i0m_cols.join("&"))
             }
-            html += "</tr>";
-            i0m_rows.push(i0m_cols.join("&"))
-        }
-        html_i0m += i0m_rows.join("\\\\")
-        html_i0m += "\\end{bmatrix}$"
-        i0me.innerHTML = html_i0m
-        html += "</table></div>"
+            html_i0m += i0m_rows.join("\\\\")
+            html_i0m += "\\end{bmatrix}$"
+            i0me.innerHTML = html_i0m
+            html += "</table></div>"
 
-        html += " <div style='display: inline-block;font-size:200%'>&nbsp;&times;&nbsp;</div> "
+            html += " <div style='display: inline-block;font-size:200%'>&nbsp;&times;&nbsp;</div> "
 
-        html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
-        var html_i1m = "$\\begin{bmatrix}";
-        var i1m_rows = [];
-        for (var row = 0; row < i1.length; row++) {
-            html += "<tr>";
-            var i1m_cols = []
-            for (var col = 0; col < i1[0].length; col++) {
-                html += `<td id='i1_${row}_${col}'><div class='inner' id='si1_${row}_${col}'>${i1[row][col]}</div></td>`
-                i1m_cols.push(`{${i1[row][col]}}`)
+            html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
+            var html_i1m = "$\\begin{bmatrix}";
+            var i1m_rows = [];
+            for (var row = 0; row < i1.length; row++) {
+                html += "<tr>";
+                var i1m_cols = []
+                for (var col = 0; col < i1[0].length; col++) {
+                    html += `<td id='i1_${row}_${col}'><div class='inner' id='si1_${row}_${col}'>${i1[row][col]}</div></td>`
+                    i1m_cols.push(`{${i1[row][col]}}`)
+                }
+                html += "</tr>";
+                i1m_rows.push(i1m_cols.join("&"))
             }
-            html += "</tr>";
-            i1m_rows.push(i1m_cols.join("&"))
-        }
-        html_i1m += i1m_rows.join("\\\\")
-        html_i1m += "\\end{bmatrix}$"
-        i1me.innerHTML = html_i1m
-        html += "</table></div>"
+            html_i1m += i1m_rows.join("\\\\")
+            html_i1m += "\\end{bmatrix}$"
+            i1me.innerHTML = html_i1m
+            html += "</table></div>"
 
-        html += " <div style='display: inline-block;font-size:200%'>&nbsp;=&nbsp;</div> "
+            html += " <div style='display: inline-block;font-size:200%'>&nbsp;=&nbsp;</div> "
 
-        html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
-        var html_rm = "$\\begin{bmatrix}";
-        var rm_rows = [];
-        for (var row = 0; row < i0.length; row++) {
-            html += "<tr>";
-            var rm_cols = []
-            for (var col = 0; col < i1[row].length; col++) {
-                res = [
-                    [],
-                    [], ""
-                ];
-                val = 0;
-                for (var pair = 0; pair < i0[0].length; pair++) {
-                    var v0 = i0[row][pair]
-                    var v1 = i1[pair][col]
-                    res[0].push(mathw(`a_{${row+1},${pair+1}}b_{${pair+1},${col+1}}`, row, pair, col, "v"))
-                    res[1].push(mathw(`${v0}\\times${v1}`, row, pair, col, "n"))
-                    val += v0 * v1;
-                };
-                res[2] = val
-                var resx = res[0].join(" + ") + "<br>" + res[1].join(" + ") + "<br>" + res[2]
-                html += `<td id='res_${row}_${col}' onmouseover='return resfce(${row},${col})'>${resx}</td>`
-                rm_cols.push(`{${val}}`)
+            html += "<div style='display: inline-block'><table padding='5' border='1' style='display: inline-block'>"
+            var html_rm = "$\\begin{bmatrix}";
+            var rm_rows = [];
+            for (var row = 0; row < i0.length; row++) {
+                html += "<tr>";
+                var rm_cols = []
+                for (var col = 0; col < i1[row].length; col++) {
+                    res = [
+                        [],
+                        [], ""
+                    ];
+                    val = 0;
+                    for (var pair = 0; pair < i0[0].length; pair++) {
+                        var v0 = i0[row][pair]
+                        var v1 = i1[pair][col]
+                        res[0].push(mathw(`a_{${row+1},${pair+1}}b_{${pair+1},${col+1}}`, row, pair, col, "v"))
+                        res[1].push(mathw(`${v0}\\times${v1}`, row, pair, col, "n"))
+                        val += v0 * v1;
+                    };
+                    res[2] = val
+                    var resx = res[0].join(" + ") + "<br>" + res[1].join(" + ") + "<br>" + res[2]
+                    html += `<td id='res_${row}_${col}' onmouseover='return resfce(${row},${col})'>${resx}</td>`
+                    rm_cols.push(`{${val}}`)
+                }
+                html += "</tr>";
+                rm_rows.push(rm_cols.join("&"))
             }
-            html += "</tr>";
-            rm_rows.push(rm_cols.join("&"))
-        }
-        html += "</table></div>"
-        html_rm += rm_rows.join("\\\\")
-        html_rm += "\\end{bmatrix}$"
+            html += "</table></div>"
+            html_rm += rm_rows.join("\\\\")
+            html_rm += "\\end{bmatrix}$"
 
-        trgm.innerHTML = mx_html + "<br/><div class='middle'>"+html_i0m+"x"+html_i1m+"="+html_rm+"</div>"
+            trgm.innerHTML = "Shape: " + mx_html + "<br/><br/><div class='middle'>" + html_i0m + "x" + html_i1m + "=" + html_rm + "</div>"
 
-        trge.innerHTML = html;
+            trge.innerHTML = html;
+            MathJax.typesetPromise();
+        }).catch((err) => {
+            /*console.log(err.message)*/
+        });
     }
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
     // prevent sending to server
     return false
 }
